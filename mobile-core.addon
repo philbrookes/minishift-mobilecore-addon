@@ -8,8 +8,8 @@ echo
 ssh tce-load -wi bash.tcz
 ssh tce-load -wi coreutils.tcz
 ssh sudo chmod -R a+rwx /var/lib/minishift/openshift.local.config
-ssh curl -s -O -J -L https://github.com/openshift/origin/releases/download/v3.9.0/openshift-origin-client-tools-v3.9.0-191fece-linux-64bit.tar.gz
-ssh tar -xf openshift-origin-client-tools-v3.9.0-191fece-linux-64bit.tar.gz && sudo cp openshift-origin-client-tools-v3.9.0-191fece-linux-64bit/oc /usr/bin/oc
+ssh OC_VERSION=$(docker ps | grep openshift/origin-pod | grep webconsole | awk '{print $2}' | cut -f2 -d:); OC_URL=$(curl https://github.com/openshift/origin/releases | grep "/openshift/origin/releases/download/${OC_VERSION}/openshift-origin-client-tools-${OC_VERSION}" | grep "linux" | cut -f2 -d'"'); curl -s -L https://github.com${OC_URL} -o oc.tar.gz
+ssh tar -xf oc.tar.gz --strip-components=1 && sudo cp ./oc /usr/bin/oc
 ssh mkdir ~/.kube
 ssh cp /var/lib/minishift/openshift.local.config/master/admin.kubeconfig ~/.kube/config
 ssh oc login -u system:admin
